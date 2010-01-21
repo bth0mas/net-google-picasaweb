@@ -1,5 +1,10 @@
 Revision history for Net-Google-PicasaWeb
 
+0.09 candidate - January 21, 2010
+
+    * Added lat and lon to media entries
+    * Added lat and lon to albums
+
 0.08    January 20, 2010
 
     * Correct a missing requirement for Test::Mock::LWP (Thanks CPAN Testers

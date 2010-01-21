@@ -91,6 +91,28 @@ has size => (
     isa => 'Int',
 );
 
+=head2 lat
+
+The lattitude of the place where the picture was taken.
+
+=cut
+
+has lat => (
+    is => 'rw',
+    isa => 'Num',
+);
+
+=head2 lon
+
+The longitude of the place where the picture was taken.
+
+=cut
+
+has lon => (
+    is => 'rw',
+    isa => 'Num',
+);
+
 =head1 METHODS
 
 =cut
@@ -107,6 +129,16 @@ override from_feed => sub {
         if $entry->field('gphoto:height');
     $self->size($entry->field('gphoto:size'))
         if $entry->field('gphoto:size');
+
+    if ( my $georss = $entry->first_child('georss:where') ) {
+	if ( my $point = $georss->first_child('gml:Point') ) {	    
+	    if ( my $pos = $point->field('gml:pos') ) {
+		my ( $lat, $lon ) = split /\s+/, $pos;
+		$self->lat( $lat );
+		$self->lon( $lon );
+	    }
+	}
+    }    
 
     return $self;
 };

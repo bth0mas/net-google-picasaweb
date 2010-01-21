@@ -71,6 +71,28 @@ has number_of_photos => (
     isa => 'Int',
 );
 
+=head2 lat
+
+The lattitude of the album.
+
+=cut
+
+has lat => (
+    is => 'rw',
+    isa => 'Num',
+);
+
+=head2 lon
+
+The longitude of album.
+
+=cut
+
+has lon => (
+    is => 'rw',
+    isa => 'Num',
+);
+
 =head1 METHODS
 
 =cut
@@ -82,6 +104,16 @@ override from_feed => sub {
     $self->bytes_used($entry->field('gphoto:bytesUsed'));
     $self->number_of_photos($entry->field('gphoto:numphotos'));
 
+    if ( my $georss = $entry->first_child('georss:where') ) {
+	if ( my $point = $georss->first_child('gml:Point') ) {	    
+	    if ( my $pos = $point->field('gml:pos') ) {
+		my ( $lat, $lon ) = split /\s+/, $pos;
+		$self->lat( $lat );
+		$self->lon( $lon );
+	    }
+	}
+    }
+    
     return $self;
 };
 
